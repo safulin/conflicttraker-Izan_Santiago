@@ -1,21 +1,20 @@
 <template>
-  <div class="base-card">
-    <slot name="header"></slot>
-    <slot></slot>
-    <slot name="footer"></slot>
+  <div class="card">
+    <div v-if="$slots.header"><slot name="header" /></div>
+    <slot />
+    <div v-if="$slots.footer" class="footer"><slot name="footer" /></div>
   </div>
 </template>
 
-<script lang="ts" setup>
-// BaseCard component – minimal implementation
-</script>
-
 <style scoped>
-.base-card {
-  background-color: var(--card-bg, #fff);
-  border: 1px solid var(--card-border, #e0e0e0);
-  border-radius: 8px;
+.card {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 6px;
   padding: 1rem;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
+.footer { margin-top: auto; padding-top: 0.5rem; }
 </style>

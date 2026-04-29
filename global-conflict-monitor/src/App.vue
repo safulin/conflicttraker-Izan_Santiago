@@ -1,17 +1,16 @@
 <script setup>
-import HomeView from './views/HomeView.vue'
+import { RouterView } from 'vue-router'
 </script>
 
 <template>
-  <HomeView />
+  <RouterView />
 </template>
 
 <style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
 body {
-  margin: 0;
-  padding: 0;
-  font-family: system-ui, -apple-system, sans-serif;
-  background-color: #f5f6fa;
-  color: #2c3e50;
+  font-family: system-ui, sans-serif;
+  background: #f5f5f5;
+  color: #333;
 }
 </style>

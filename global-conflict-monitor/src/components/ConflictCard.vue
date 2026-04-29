@@ -3,49 +3,45 @@ import BaseCard from './BaseCard.vue'
 import { computed } from 'vue'
 
 const props = defineProps(['conflict'])
-defineEmits(['view-details'])
+const emit = defineEmits(['view-details'])
 
-// Calculamos la clase de color basada en el estado
-const statusClass = computed(() => {
-  if (props.conflict.estado === 'ACTIVO') return 'activo'
-  if (props.conflict.estado === 'CONGELADO') return 'congelado'
-  if (props.conflict.estado === 'FINALIZADO') return 'finalizado'
-  return ''
+const statusColors = { ACTIVO: '#e74c3c', CONGELADO: '#2980b9', FINALIZADO: '#27ae60' }
+const statusLabels = { ACTIVO: 'Actiu', CONGELADO: 'Congelat', FINALIZADO: 'Finalitzat' }
+
+const formattedDate = computed(() => {
+  if (!props.conflict.fecha_inicio) return '—'
+  return new Date(props.conflict.fecha_inicio).toLocaleDateString('ca-ES', {
+    year: 'numeric', month: 'short', day: 'numeric'
+  })
 })
 </script>
 
 <template>
-  <BaseCard :class="statusClass">
+  <BaseCard>
     <template #header>
-      <h3>{{ conflict.nombre || 'Conflicte sense nom' }}</h3>
-    </template>
-    
-    <div class="conflict-content">
-      <p><strong>Estat:</strong> {{ conflict.estado }}</p>
-      <div class="flags" v-if="conflict.paises && conflict.paises.length">
-        <img 
-          v-for="pais in conflict.paises" 
-          :key="pais" 
-          :src="`https://flagcdn.com/w20/${pais.toLowerCase()}.png`" 
-          width="20" 
-          alt="bandera"
-        />
+      <div class="header">
+        <h3>{{ conflict.nombre || 'Sense nom' }}</h3>
+        <span class="badge" :style="{ backgroundColor: statusColors[conflict.estado] }">
+          {{ statusLabels[conflict.estado] || conflict.estado }}
+        </span>
       </div>
-    </div>
+    </template>
+
+    <p class="desc">{{ conflict.descripcion || 'Sense descripció.' }}</p>
+    <p class="date">{{ formattedDate }}</p>
 
     <template #footer>
-      <button @click="$emit('view-details', conflict.id)">Veure Detalls</button>
+      <button @click="emit('view-details', conflict.id)">Veure detalls</button>
     </template>
   </BaseCard>
 </template>
 
 <style scoped>
-/* Clases dinámicas aplicadas al BaseCard */
-.activo { border-left: 5px solid #e53935; background-color: #ffebee; }
-.congelado { border-left: 5px solid #1e88e5; background-color: #e3f2fd; }
-.finalizado { border-left: 5px solid #43a047; background-color: #e8f5e9; }
-
-.flags { display: flex; gap: 8px; margin-top: 10px; }
-button { padding: 8px 12px; background: #2c3e50; color: white; border: none; border-radius: 4px; cursor: pointer; }
-button:hover { background: #1a252f; }
+.header { display: flex; justify-content: space-between; align-items: flex-start; gap: 0.5rem; margin-bottom: 0.75rem; }
+h3 { font-size: 0.95rem; font-weight: 600; }
+.badge { color: #fff; padding: 0.2rem 0.6rem; border-radius: 12px; font-size: 0.75rem; font-weight: 600; white-space: nowrap; }
+.desc { font-size: 0.85rem; color: #666; line-height: 1.4; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; margin-bottom: 0.5rem; }
+.date { font-size: 0.8rem; color: #999; }
+button { width: 100%; padding: 0.5rem; background: #fff; border: 1px solid #ccc; border-radius: 4px; cursor: pointer; font-size: 0.85rem; }
+button:hover { background: #f0f0f0; }
 </style>
